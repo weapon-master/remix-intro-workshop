@@ -1,12 +1,16 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs} from "@remix-run/node";
+import { Response } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useActionData,
+  useCatch,
   useLoaderData,
+  useParams,
   useTransition,
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import { ErrorFallback } from "~/components";
 
 import {
   createPost,
@@ -22,8 +26,24 @@ export async function loader({ params }: LoaderArgs) {
   }
 
   const post = await getPost(params.slug);
-  invariant(post, `Post not found: ${params.slug}`);
+  // invariant(post, `Post not found: ${params.slug}`);
+  if (!post) {
+    throw new Response('not found', { status: 404 });
+  }
   return json({ post });
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return <ErrorFallback>Something goes wrong with this post: {error.message}</ErrorFallback>
+} 
+
+export function CatchBoundary() {
+  const caught = useCatch();
+  const params = useParams();
+  if (caught.status === 404) {
+    return <ErrorFallback>Post not found for slug: {params.slug}</ErrorFallback>
+  }
+  throw new Error(`Unrecognised status code: ${caught.status}`);
 }
 
 export async function action({ request, params }: ActionArgs) {
