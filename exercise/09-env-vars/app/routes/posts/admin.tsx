@@ -35,6 +35,7 @@ export default function PostAdmin() {
                 ➕ Create New Post
               </Link>
             </li>
+            <li>{ENV.ADMIN_EMAIL}</li>
           </ul>
         </nav>
         <main className="col-span-4 md:col-span-3">
