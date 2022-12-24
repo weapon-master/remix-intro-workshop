@@ -1,6 +1,7 @@
 # 06. Progressive Enhancement
 
 ## 📝 Notes
+- **Transition**: navigation. `transition.submission` means is navigating.
 
 ## 🤓 Background
 
